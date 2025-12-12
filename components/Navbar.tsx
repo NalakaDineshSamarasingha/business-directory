@@ -47,7 +47,7 @@ export default function Navbar() {
             </button>
             
             <Link 
-              href="/contact"
+              href="/login"
               className="bg-[#151D26] text-white px-8 py-3 rounded hover:bg-[#2B3D4F] transition-colors font-medium text-lg"
             >
               Sign in
