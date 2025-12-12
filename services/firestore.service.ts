@@ -38,6 +38,54 @@ export interface BusinessData {
   businessName: string;
   userType: 'business';
   verified: boolean;
+  
+  // Business Profile
+  businessIcon?: string | null;
+  description?: string | null;
+  category?: string | null;
+  
+  // Gallery
+  images?: string[];
+  
+  // Contact Details
+  phone?: string | null;
+  contactEmail?: string | null;
+  website?: string | null;
+  
+  // Social Links
+  socialLinks?: {
+    facebook?: string;
+    instagram?: string;
+    twitter?: string;
+    linkedin?: string;
+    youtube?: string;
+  };
+  
+  // Location
+  address?: {
+    street?: string;
+    city?: string;
+    state?: string;
+    zipCode?: string;
+    country?: string;
+  };
+  googleMapLocation?: {
+    lat: number;
+    lng: number;
+  };
+  googleMapUrl?: string;
+  
+  // Business Hours
+  businessHours?: {
+    monday?: { open: string; close: string; closed?: boolean };
+    tuesday?: { open: string; close: string; closed?: boolean };
+    wednesday?: { open: string; close: string; closed?: boolean };
+    thursday?: { open: string; close: string; closed?: boolean };
+    friday?: { open: string; close: string; closed?: boolean };
+    saturday?: { open: string; close: string; closed?: boolean };
+    sunday?: { open: string; close: string; closed?: boolean };
+  };
+  
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }

@@ -47,19 +47,19 @@ export default function Navbar() {
 
           {/* Navigation Links */}
           <div className="hidden md:flex items-center gap-12">
-            <Link href="/design" className="text-gray-800 hover:text-black transition-colors text-lg">
+            <Link href="/" className="text-gray-800 hover:text-black transition-colors text-lg">
               Home
             </Link>
-            <Link href="/marketing" className="text-gray-800 hover:text-black transition-colors text-lg">
+            <Link href="/find-business" className="text-gray-800 hover:text-black transition-colors text-lg">
               Find a Business
             </Link>
-            <Link href="/marketing" className="text-gray-800 hover:text-black transition-colors text-lg">
+            <Link href="/business-register" className="text-gray-800 hover:text-black transition-colors text-lg">
               Have a Business
             </Link>
-            <Link href="/technology" className="text-gray-800 hover:text-black transition-colors text-lg">
+            <Link href="/about" className="text-gray-800 hover:text-black transition-colors text-lg">
               About
             </Link>
-            <Link href="/expertise" className="text-gray-800 hover:text-black transition-colors text-lg">
+            <Link href="/contact" className="text-gray-800 hover:text-black transition-colors text-lg">
               Contact
             </Link>
           </div>
@@ -115,11 +115,11 @@ export default function Navbar() {
                       <p className="text-xs text-gray-500">{user.email}</p>
                     </div>
                     <Link 
-                      href="/profile" 
+                      href={userData.userType === 'business' ? '/business/profile' : '/profile'}
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      Profile
+                      {userData.userType === 'business' ? 'Business Profile' : 'Profile'}
                     </Link>
                     <Link 
                       href="/settings" 
