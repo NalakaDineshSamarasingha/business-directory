@@ -2,15 +2,50 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { showSuccess, showError } from "@/lib/utils/toast";
+import { signInWithEmail } from "@/services/auth.service";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log("Login attempt:", { email, password });
+    setIsLoading(true);
+
+    try {
+      // Sign in directly on the client side so Firebase Auth state changes
+      await signInWithEmail(email, password);
+      
+      showSuccess('Login successful!');
+      
+      // Redirect to home page
+      router.push('/');
+    } catch (error: any) {
+      console.error('Login error:', error);
+      
+      // Handle Firebase Auth errors
+      if (error.message) {
+        if (error.message.includes('invalid-credential') || 
+            error.message.includes('user-not-found') || 
+            error.message.includes('wrong-password')) {
+          showError('Invalid email or password');
+        } else if (error.message.includes('user-disabled')) {
+          showError('This account has been disabled');
+        } else if (error.message.includes('too-many-requests')) {
+          showError('Too many login attempts. Please try again later');
+        } else {
+          showError('Login failed. Please try again');
+        }
+      } else {
+        showError('An error occurred during login');
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -86,9 +121,20 @@ export default function LoginPage() {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-[#151D26] text-white py-3 rounded-lg hover:bg-[#2B3D4F] transition-colors font-medium text-lg"
+              disabled={isLoading}
+              className="w-full bg-[#151D26] text-white py-3 rounded-lg hover:bg-[#2B3D4F] transition-colors font-medium text-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
             >
-              Sign in
+              {isLoading ? (
+                <>
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Signing in...
+                </>
+              ) : (
+                'Sign in'
+              )}
             </button>
           </form>
 
