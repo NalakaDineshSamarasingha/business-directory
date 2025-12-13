@@ -42,7 +42,7 @@ export default function ContactTab({
               value={formData.phone}
               onChange={onInputChange}
               disabled={!isEditing}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50 text-gray-900"
               placeholder="+1 (555) 123-4567"
             />
           </div>
@@ -57,7 +57,7 @@ export default function ContactTab({
               value={formData.contactEmail}
               onChange={onInputChange}
               disabled={!isEditing}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50 text-gray-900"
               placeholder="contact@business.com"
             />
           </div>
@@ -72,7 +72,7 @@ export default function ContactTab({
               value={formData.website}
               onChange={onInputChange}
               disabled={!isEditing}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50 text-gray-900"
               placeholder="https://www.yourbusiness.com"
             />
           </div>
@@ -93,7 +93,7 @@ export default function ContactTab({
               value={formData.street}
               onChange={onInputChange}
               disabled={!isEditing}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50 text-gray-900"
               placeholder="123 Main Street"
             />
           </div>
@@ -108,7 +108,7 @@ export default function ContactTab({
               value={formData.city}
               onChange={onInputChange}
               disabled={!isEditing}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50 text-gray-900"
               placeholder="New York"
             />
           </div>
@@ -123,7 +123,7 @@ export default function ContactTab({
               value={formData.state}
               onChange={onInputChange}
               disabled={!isEditing}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50 text-gray-900"
               placeholder="NY"
             />
           </div>
@@ -138,7 +138,7 @@ export default function ContactTab({
               value={formData.zipCode}
               onChange={onInputChange}
               disabled={!isEditing}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50 text-gray-900"
               placeholder="10001"
             />
           </div>
@@ -153,7 +153,7 @@ export default function ContactTab({
               value={formData.country}
               onChange={onInputChange}
               disabled={!isEditing}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50 text-gray-900"
               placeholder="United States"
             />
           </div>
@@ -173,7 +173,7 @@ export default function ContactTab({
             value={formData.googleMapUrl}
             onChange={onInputChange}
             disabled={!isEditing}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50 text-gray-900"
             placeholder="https://www.google.com/maps/embed?pb=..."
           />
           <p className="text-xs text-gray-500 mt-1">
@@ -215,7 +215,7 @@ export default function ContactTab({
               value={formData.facebook}
               onChange={onInputChange}
               disabled={!isEditing}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50 text-gray-900"
               placeholder="https://facebook.com/yourbusiness"
             />
           </div>
@@ -235,7 +235,7 @@ export default function ContactTab({
               value={formData.instagram}
               onChange={onInputChange}
               disabled={!isEditing}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50 text-gray-900"
               placeholder="https://instagram.com/yourbusiness"
             />
           </div>
@@ -255,7 +255,7 @@ export default function ContactTab({
               value={formData.twitter}
               onChange={onInputChange}
               disabled={!isEditing}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50 text-gray-900"
               placeholder="https://twitter.com/yourbusiness"
             />
           </div>
@@ -275,7 +275,7 @@ export default function ContactTab({
               value={formData.linkedin}
               onChange={onInputChange}
               disabled={!isEditing}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50 text-gray-900"
               placeholder="https://linkedin.com/company/yourbusiness"
             />
           </div>
@@ -295,7 +295,7 @@ export default function ContactTab({
               value={formData.youtube}
               onChange={onInputChange}
               disabled={!isEditing}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50 text-gray-900"
               placeholder="https://youtube.com/@yourbusiness"
             />
           </div>

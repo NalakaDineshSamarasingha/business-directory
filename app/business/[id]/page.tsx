@@ -121,8 +121,22 @@ export default function BusinessDetailsPage() {
   ].filter(Boolean);
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-24 pb-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 pb-12">
+      <div className="max-w-7xl mx-auto">
+        {/* Cover Image */}
+        {business.coverImage && (
+          <div className="relative w-full h-64 md:h-80 bg-gray-200 mb-6">
+            <Image
+              src={business.coverImage}
+              alt={`${business.businessName} cover`}
+              fill
+              className="object-cover"
+              priority
+            />
+          </div>
+        )}
+        
+        <div className="px-4 sm:px-6 lg:px-8">
         {/* Back Button */}
         <button
           onClick={() => router.back()}
@@ -186,6 +200,10 @@ export default function BusinessDetailsPage() {
                     )}
                   </div>
 
+                  {business.tagline && (
+                    <p className="text-lg text-gray-600 italic mt-3">{business.tagline}</p>
+                  )}
+                  
                   {business.description && (
                     <p className="text-gray-700 leading-relaxed mt-4">{business.description}</p>
                   )}
@@ -451,6 +469,7 @@ export default function BusinessDetailsPage() {
               </div>
             </div>
           </div>
+        </div>
         </div>
       </div>
     </div>

@@ -105,7 +105,7 @@ export default function BusinessHoursTab({
                         value={formData[openKey] as string}
                         onChange={onInputChange}
                         disabled={!isEditing || (formData[closedKey] as boolean)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50 disabled:text-gray-400"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50 text-gray-900 disabled:text-gray-400"
                       />
                     </div>
 
@@ -121,7 +121,7 @@ export default function BusinessHoursTab({
                         value={formData[closeKey] as string}
                         onChange={onInputChange}
                         disabled={!isEditing || (formData[closedKey] as boolean)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50 disabled:text-gray-400"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50 text-gray-900 disabled:text-gray-400"
                       />
                     </div>
                   </div>

@@ -41,6 +41,8 @@ export interface BusinessData {
   
   // Business Profile
   businessIcon?: string | null;
+  coverImage?: string | null;
+  tagline?: string | null;
   description?: string | null;
   category?: string | null;
   

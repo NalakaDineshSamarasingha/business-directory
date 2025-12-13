@@ -10,7 +10,7 @@ interface BusinessCardProps {
 
 export default function BusinessCard({ business }: BusinessCardProps) {
   const defaultIcon = "https://via.placeholder.com/150?text=Business";
-  const businessImage = business.images?.[0] || business.businessIcon || defaultIcon;
+  const businessImage = business.businessIcon || defaultIcon;
 
   // Format business hours to show if open/closed
   const isOpenNow = () => {
@@ -85,10 +85,10 @@ export default function BusinessCard({ business }: BusinessCardProps) {
             {business.businessName}
           </h3>
 
-          {/* Description */}
-          {business.description && (
-            <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-              {business.description}
+          {/* Tagline */}
+          {business.tagline && (
+            <p className="text-sm text-gray-600 mb-3 line-clamp-2 italic">
+              {business.tagline}
             </p>
           )}
 

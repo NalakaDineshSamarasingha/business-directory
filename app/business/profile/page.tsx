@@ -27,6 +27,7 @@ export default function BusinessProfilePage() {
   // Form state
   const [formData, setFormData] = useState({
     businessName: '',
+    tagline: '',
     description: '',
     category: '',
     phone: '',
@@ -100,6 +101,7 @@ export default function BusinessProfilePage() {
   const loadFormData = (data: BusinessData) => {
     setFormData({
       businessName: data.businessName || '',
+      tagline: data.tagline || '',
       description: data.description || '',
       category: data.category || '',
       phone: data.phone || '',
@@ -166,6 +168,7 @@ export default function BusinessProfilePage() {
 
       // Add optional fields
       if (formData.businessName) updateData.businessName = formData.businessName;
+      if (formData.tagline !== undefined) updateData.tagline = formData.tagline || null;
       if (formData.description !== undefined) updateData.description = formData.description || null;
       if (formData.category !== undefined) updateData.category = formData.category || null;
       if (formData.phone !== undefined) updateData.phone = formData.phone || null;
@@ -263,7 +266,7 @@ export default function BusinessProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-28 pb-12">
+    <div className="min-h-screen bg-gray-50 pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Component */}
         <BusinessHeader
@@ -297,6 +300,7 @@ export default function BusinessProfilePage() {
               businessData={businessData}
               formData={{
                 businessName: formData.businessName,
+                tagline: formData.tagline,
                 description: formData.description,
                 category: formData.category,
               }}

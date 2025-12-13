@@ -6,6 +6,7 @@ interface OverviewTabProps {
   businessData: BusinessData;
   formData: {
     businessName: string;
+    tagline: string;
     description: string;
     category: string;
   };
@@ -31,7 +32,7 @@ export default function OverviewTab({
           value={formData.businessName}
           onChange={onInputChange}
           disabled={!isEditing}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50 text-gray-900"
         />
       </div>
 
@@ -44,7 +45,7 @@ export default function OverviewTab({
           value={formData.category}
           onChange={onInputChange}
           disabled={!isEditing}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50 text-gray-900"
         >
           <option value="">Select a category</option>
           <option value="Restaurant">Restaurant</option>
@@ -61,7 +62,24 @@ export default function OverviewTab({
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Description
+          Tagline
+        </label>
+        <input
+          type="text"
+          name="tagline"
+          value={formData.tagline}
+          onChange={onInputChange}
+          disabled={!isEditing}
+          maxLength={100}
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50 text-gray-900"
+          placeholder="A short catchy phrase about your business (max 100 characters)"
+        />
+        <p className="text-xs text-gray-500 mt-1">{formData.tagline.length}/100 characters</p>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Full Description
         </label>
         <textarea
           name="description"
@@ -69,8 +87,8 @@ export default function OverviewTab({
           onChange={onInputChange}
           disabled={!isEditing}
           rows={6}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50"
-          placeholder="Tell customers about your business..."
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] disabled:bg-gray-50 text-gray-900"
+          placeholder="Tell customers about your business in detail..."
         />
       </div>
     </div>
