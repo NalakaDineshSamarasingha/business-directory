@@ -14,13 +14,14 @@ import ProfileTabs from "@/components/business/ProfileTabs";
 import OverviewTab from "@/components/business/OverviewTab";
 import ContactTab from "@/components/business/ContactTab";
 import BusinessHoursTab from "@/components/business/BusinessHoursTab";
+import LocationsTab from "@/components/business/LocationsTab";
 
 export default function BusinessProfilePage() {
   const { user, userData, loading } = useAuth();
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [activeTab, setActiveTab] = useState<'overview' | 'gallery' | 'contact' | 'hours'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'gallery' | 'contact' | 'hours' | 'locations'>('overview');
   const [businessData, setBusinessData] = useState<BusinessData | null>(null);
 
   // Form state
@@ -282,6 +283,7 @@ export default function BusinessProfilePage() {
             { id: 'gallery', label: 'Gallery' },
             { id: 'contact', label: 'Contact & Social' },
             { id: 'hours', label: 'Business Hours' },
+            { id: 'locations', label: 'Locations' },
           ]}
           activeTab={activeTab}
           onTabChange={(tabId) => setActiveTab(tabId as any)}
@@ -365,6 +367,16 @@ export default function BusinessProfilePage() {
               }}
               isEditing={isEditing}
               onInputChange={handleInputChange}
+            />
+          )}
+
+          {/* Locations Tab */}
+          {activeTab === 'locations' && (
+            <LocationsTab
+              businessData={businessData}
+              userId={user.uid}
+              isEditing={isEditing}
+              onDataUpdate={refreshBusinessData}
             />
           )}
         </div>

@@ -61,7 +61,7 @@ export interface BusinessData {
     youtube?: string;
   };
   
-  // Location
+  // Primary Location (for backward compatibility)
   address?: {
     street?: string;
     city?: string;
@@ -74,6 +74,22 @@ export interface BusinessData {
     lng: number;
   };
   googleMapUrl?: string;
+  
+  // Multiple Locations Support
+  locations?: {
+    id: string;
+    name: string;
+    address: {
+      street?: string;
+      city?: string;
+      state?: string;
+      zipCode?: string;
+      country?: string;
+    };
+    googleMapUrl?: string;
+    phone?: string;
+    isPrimary?: boolean;
+  }[];
   
   // Business Hours
   businessHours?: {

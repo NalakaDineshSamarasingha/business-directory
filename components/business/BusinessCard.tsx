@@ -66,6 +66,11 @@ export default function BusinessCard({ business }: BusinessCardProps) {
               Verified
             </div>
           )}
+          {business.locations && business.locations.length > 1 && (
+            <div className="absolute bottom-3 right-3 bg-green-600 text-white px-2 py-1 rounded-full text-xs font-semibold">
+              {business.locations.length} Locations
+            </div>
+          )}
           {business.category && (
             <div className="absolute top-3 left-3 bg-[#151D26] text-white px-3 py-1 rounded-full text-xs font-semibold">
               {business.category}

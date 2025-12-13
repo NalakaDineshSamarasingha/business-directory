@@ -270,29 +270,86 @@ export default function BusinessDetailsPage() {
               </div>
             )}
 
-            {/* Location */}
+            {/* Location(s) */}
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
-                Location
+                {business.locations && business.locations.length > 1 ? 'Locations' : 'Location'}
               </h2>
-              <p className="text-gray-700 mb-4 font-medium">{formatAddress(business)}</p>
               
-              {business.googleMapUrl && (
-                <div className="aspect-video rounded-lg overflow-hidden shadow-sm">
-                  <iframe
-                    src={business.googleMapUrl}
-                    width="100%"
-                    height="100%"
-                    style={{ border: 0 }}
-                    allowFullScreen
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                  />
+              {business.locations && business.locations.length > 0 ? (
+                <div className="space-y-6">
+                  {business.locations
+                    .sort((a, b) => (b.isPrimary ? 1 : 0) - (a.isPrimary ? 1 : 0))
+                    .map((location) => (
+                      <div key={location.id} className="border-b last:border-b-0 pb-6 last:pb-0">
+                        <div className="flex items-start justify-between mb-3">
+                          <div>
+                            <h3 className="font-semibold text-gray-900 text-lg">{location.name}</h3>
+                            {location.isPrimary && (
+                              <span className="inline-block mt-1 px-2 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded">
+                                Primary Location
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-2 mb-4">
+                          <p className="text-gray-700 font-medium">
+                            {location.address.street && `${location.address.street}, `}
+                            {location.address.city}{location.address.state && `, ${location.address.state}`}
+                            {location.address.zipCode && ` ${location.address.zipCode}`}
+                            {location.address.country && `, ${location.address.country}`}
+                          </p>
+                          {location.phone && (
+                            <div className="flex items-center gap-2">
+                              <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                              </svg>
+                              <a href={`tel:${location.phone}`} className="text-[#151D26] hover:underline">
+                                {location.phone}
+                              </a>
+                            </div>
+                          )}
+                        </div>
+                        
+                        {location.googleMapUrl && (
+                          <div className="aspect-video rounded-lg overflow-hidden shadow-sm">
+                            <iframe
+                              src={location.googleMapUrl}
+                              width="100%"
+                              height="100%"
+                              style={{ border: 0 }}
+                              allowFullScreen
+                              loading="lazy"
+                              referrerPolicy="no-referrer-when-downgrade"
+                            />
+                          </div>
+                        )}
+                      </div>
+                    ))}
                 </div>
+              ) : (
+                <>
+                  <p className="text-gray-700 mb-4 font-medium">{formatAddress(business)}</p>
+                  
+                  {business.googleMapUrl && (
+                    <div className="aspect-video rounded-lg overflow-hidden shadow-sm">
+                      <iframe
+                        src={business.googleMapUrl}
+                        width="100%"
+                        height="100%"
+                        style={{ border: 0 }}
+                        allowFullScreen
+                        loading="lazy"
+                        referrerPolicy="no-referrer-when-downgrade"
+                      />
+                    </div>
+                  )}
+                </>
               )}
             </div>
 
