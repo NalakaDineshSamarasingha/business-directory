@@ -10,18 +10,20 @@ import { db } from '@/lib/firebase/config';
 import { COLLECTIONS } from '@/services/firestore.service';
 import BusinessHeader from "@/components/business/BusinessHeader";
 import BusinessGallery from "@/components/business/BusinessGallery";
+import BannerImagesTab from "@/components/business/BannerImagesTab";
 import ProfileTabs from "@/components/business/ProfileTabs";
 import OverviewTab from "@/components/business/OverviewTab";
 import ContactTab from "@/components/business/ContactTab";
 import BusinessHoursTab from "@/components/business/BusinessHoursTab";
 import LocationsTab from "@/components/business/LocationsTab";
+import ServicesTab from "@/components/business/ServicesTab";
 
 export default function BusinessProfilePage() {
   const { user, userData, loading } = useAuth();
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [activeTab, setActiveTab] = useState<'overview' | 'gallery' | 'contact' | 'hours' | 'locations'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'gallery' | 'banners' | 'contact' | 'hours' | 'locations' | 'services'>('overview');
   const [businessData, setBusinessData] = useState<BusinessData | null>(null);
 
   // Form state
@@ -30,6 +32,7 @@ export default function BusinessProfilePage() {
     tagline: '',
     description: '',
     category: '',
+    customCategory: '',
     phone: '',
     contactEmail: '',
     website: '',
@@ -104,6 +107,7 @@ export default function BusinessProfilePage() {
       tagline: data.tagline || '',
       description: data.description || '',
       category: data.category || '',
+      customCategory: (data as any).customCategory || '',
       phone: data.phone || '',
       contactEmail: data.contactEmail || '',
       website: data.website || '',
@@ -170,7 +174,14 @@ export default function BusinessProfilePage() {
       if (formData.businessName) updateData.businessName = formData.businessName;
       if (formData.tagline !== undefined) updateData.tagline = formData.tagline || null;
       if (formData.description !== undefined) updateData.description = formData.description || null;
-      if (formData.category !== undefined) updateData.category = formData.category || null;
+      if (formData.category !== undefined) {
+        updateData.category = formData.category || null;
+        // If custom category is selected, use the custom value
+        if (formData.category === 'Custom' && formData.customCategory) {
+          updateData.category = formData.customCategory;
+        }
+      }
+      if (formData.customCategory !== undefined) updateData.customCategory = formData.customCategory || null;
       if (formData.phone !== undefined) updateData.phone = formData.phone || null;
       if (formData.contactEmail !== undefined) updateData.contactEmail = formData.contactEmail || null;
       if (formData.website !== undefined) updateData.website = formData.website || null;
@@ -284,9 +295,11 @@ export default function BusinessProfilePage() {
           tabs={[
             { id: 'overview', label: 'Overview' },
             { id: 'gallery', label: 'Gallery' },
+            { id: 'banners', label: 'Banner Images' },
             { id: 'contact', label: 'Contact & Social' },
             { id: 'hours', label: 'Business Hours' },
             { id: 'locations', label: 'Locations' },
+            { id: 'services', label: 'Services' },
           ]}
           activeTab={activeTab}
           onTabChange={(tabId) => setActiveTab(tabId as any)}
@@ -303,6 +316,7 @@ export default function BusinessProfilePage() {
                 tagline: formData.tagline,
                 description: formData.description,
                 category: formData.category,
+                customCategory: formData.customCategory,
               }}
               isEditing={isEditing}
               onInputChange={handleInputChange}
@@ -377,6 +391,26 @@ export default function BusinessProfilePage() {
           {/* Locations Tab */}
           {activeTab === 'locations' && (
             <LocationsTab
+              businessData={businessData}
+              userId={user.uid}
+              isEditing={isEditing}
+              onDataUpdate={refreshBusinessData}
+            />
+          )}
+
+          {/* Services Tab */}
+          {activeTab === 'services' && (
+            <ServicesTab
+              businessData={businessData}
+              userId={user.uid}
+              isEditing={isEditing}
+              onDataUpdate={refreshBusinessData}
+            />
+          )}
+
+          {/* Banner Images Tab */}
+          {activeTab === 'banners' && (
+            <BannerImagesTab
               businessData={businessData}
               userId={user.uid}
               isEditing={isEditing}

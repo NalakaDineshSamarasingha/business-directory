@@ -49,6 +49,18 @@ export interface BusinessData {
   // Gallery
   images?: string[];
   
+  // Banner Images (for carousel)
+  bannerImages?: string[];
+  
+  // Services
+  services?: {
+    id: string;
+    name: string;
+    description: string;
+    price?: string;
+    duration?: string;
+  }[];
+  
   // Contact Details
   phone?: string | null;
   contactEmail?: string | null;

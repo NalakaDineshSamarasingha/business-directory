@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import { BusinessData, getBusinessDocument } from "@/services/firestore.service";
 import { showError } from "@/lib/utils/toast";
+import BannerCarousel from "@/components/business/BannerCarousel";
 
 export default function BusinessDetailsPage() {
   const params = useParams();
@@ -211,6 +212,14 @@ export default function BusinessDetailsPage() {
               </div>
             </div>
 
+            {/* Banner Carousel */}
+            {business.bannerImages && business.bannerImages.length > 0 && (
+              <div className="bg-white rounded-lg shadow-sm p-6">
+                <h2 className="text-xl font-bold text-gray-900 mb-4">Featured Images</h2>
+                <BannerCarousel images={business.bannerImages} />
+              </div>
+            )}
+
             {/* Contact Information */}
             {(business.phone || business.contactEmail || business.website) && (
               <div className="bg-white rounded-lg shadow-sm p-6">
@@ -282,6 +291,47 @@ export default function BusinessDetailsPage() {
                           </span>
                         )}
                       </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Services */}
+            {business.services && business.services.length > 0 && (
+              <div className="bg-white rounded-lg shadow-sm p-6">
+                <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                  </svg>
+                  Services Offered
+                </h2>
+                <div className="grid gap-4">
+                  {business.services.map((service) => (
+                    <div
+                      key={service.id}
+                      className="border border-gray-200 rounded-lg p-4 hover:border-gray-300 transition-colors"
+                    >
+                      <h3 className="font-semibold text-gray-900 text-lg mb-2">{service.name}</h3>
+                      <p className="text-gray-700 mb-3">{service.description}</p>
+                      <div className="flex flex-wrap items-center gap-3">
+                        {service.price && (
+                          <div className="flex items-center gap-2 text-green-700 bg-green-50 px-3 py-1 rounded-full text-sm">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span className="font-medium">{service.price}</span>
+                          </div>
+                        )}
+                        {service.duration && (
+                          <div className="flex items-center gap-2 text-blue-700 bg-blue-50 px-3 py-1 rounded-full text-sm">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span className="font-medium">{service.duration}</span>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>
