@@ -18,12 +18,20 @@ export default function LoginPage() {
 
     try {
       // Sign in directly on the client side so Firebase Auth state changes
-      await signInWithEmail(email, password);
+      const userCredential = await signInWithEmail(email, password);
       
       showSuccess('Login successful!');
       
-      // Redirect to home page
-      router.push('/');
+      // Fetch user data to determine redirect
+      const response = await fetch(`/api/auth/user/${userCredential.user.uid}`);
+      const userData = await response.json();
+      
+      // Redirect based on user type
+      if (userData.userType === 'business') {
+        router.push('/business-dashboard');
+      } else {
+        router.push('/');
+      }
     } catch (error: any) {
       console.error('Login error:', error);
       

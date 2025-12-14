@@ -2,8 +2,11 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function BusinessRegisterPage() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     businessName: "",
     email: "",
@@ -58,14 +61,16 @@ export default function BusinessRegisterPage() {
     e.preventDefault();
 
     if (emailStatus.exists) {
-      alert("This email is already registered. Please use a different email.");
+      toast.error("This email is already registered. Please use a different email.");
       return;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords don't match!");
+      toast.error("Passwords don't match!");
       return;
     }
+
+    const loadingToast = toast.loading("Creating your business account...");
 
     try {
       const response = await fetch("/api/auth/register/business", {
@@ -81,15 +86,22 @@ export default function BusinessRegisterPage() {
       });
       const result = await response.json();
       console.log("Business registration:", result);
+      
+      toast.dismiss(loadingToast);
+      
       if (response.ok) {
-        alert("Business registration successful!");
+        toast.success("Business registration successful!");
+        setTimeout(() => {
+          router.push('/business-dashboard');
+        }, 1500);
         // Redirect to login or dashboard
       } else {
-        alert(result.error || "Registration failed");
+        toast.error(result.error || "Registration failed");
       }
     } catch (error) {
       console.error("Registration error:", error);
-      alert("Registration failed");
+      toast.dismiss(loadingToast);
+      toast.error("Registration failed. Please try again.");
     }
   };
 

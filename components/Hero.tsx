@@ -100,16 +100,14 @@ export default function Hero() {
       params.append('category', activeCategory);
     }
     
-    // Navigate to search page with parameters
-    router.push(`/search?${params.toString()}`);
   };
 
   return (
-    <section className="min-h-screen pt-32 bg-gradient-to-br from-gray-50 via-white to-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="text-center space-y-12">
+    <section className="min-h-screen pt-30 bg-gradient-to-br from-gray-50 via-white to-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-4 lg:px-8 py-10">
+        <div className="text-center space-y-6">
           {/* Heading */}
-          <h1 className="text-4xl lg:text-5xl font-black text-[#1E3A2B] leading-tight">
+          <h1 className="text-3xl lg:text-4xl font-black text-[#1E3A2B] leading-tight">
             What do you need?
           </h1>
 
@@ -119,7 +117,7 @@ export default function Hero() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 pb-2 text-lg font-medium transition-colors ${
+                className={`flex items-center gap-2 pb-2 text-md font-medium transition-colors ${
                   activeTab === tab.id
                     ? "text-black border-b-4 border-black"
                     : "text-gray-600 hover:text-black"
@@ -131,7 +129,7 @@ export default function Hero() {
           </div>
 
           {/* Search Bar */}
-          <div className="max-w-4xl mx-auto relative" ref={searchRef}>
+          <div className="max-w-2xl mx-auto relative" ref={searchRef}>
             <form onSubmit={handleSearch} className="relative flex items-center bg-white rounded-full shadow-lg border border-gray-200 overflow-hidden">
               <div className="pl-6 pr-4">
                 <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">

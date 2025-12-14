@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { BusinessData } from "@/services/firestore.service";
+import { useFavorites } from "@/contexts/FavoritesContext";
 
 interface BusinessCardProps {
   business: BusinessData;
@@ -11,6 +12,19 @@ interface BusinessCardProps {
 export default function BusinessCard({ business }: BusinessCardProps) {
   const defaultIcon = "https://via.placeholder.com/150?text=Business";
   const businessImage = business.businessIcon || defaultIcon;
+  const { isFavorite, addFavorite, removeFavorite } = useFavorites();
+  const isInFavorites = isFavorite(business.uid || '');
+
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (isInFavorites) {
+      removeFavorite(business.uid || '');
+    } else {
+      addFavorite(business.uid || '');
+    }
+  };
 
   // Format business hours to show if open/closed
   const isOpenNow = () => {
@@ -48,7 +62,23 @@ export default function BusinessCard({ business }: BusinessCardProps) {
 
   return (
     <Link href={`/business/${business.uid}`}>
-      <div className="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden cursor-pointer h-full">
+      <div className="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden cursor-pointer h-full relative">
+        {/* Favorite Button */}
+        <button
+          onClick={handleFavoriteClick}
+          className="absolute top-3 right-3 z-10 p-2 bg-white/90 rounded-full hover:bg-white transition-all shadow-md"
+          aria-label={isInFavorites ? "Remove from favorites" : "Add to favorites"}
+        >
+          <svg 
+            className={`w-5 h-5 transition-colors ${isInFavorites ? 'fill-red-500 text-red-500' : 'text-gray-600 hover:text-red-500'}`}
+            fill={isInFavorites ? "currentColor" : "none"}
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+          </svg>
+        </button>
+
         {/* Business Image */}
         <div className="relative h-48 w-full bg-gray-200">
           <Image
@@ -59,7 +89,7 @@ export default function BusinessCard({ business }: BusinessCardProps) {
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
           {business.verified && (
-            <div className="absolute top-3 right-3 bg-blue-600 text-white px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
+            <div className="absolute top-3 left-3 bg-blue-600 text-white px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
               <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
               </svg>
