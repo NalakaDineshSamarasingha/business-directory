@@ -3,13 +3,29 @@
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
+
+interface SearchResult {
+  id: string;
+  businessName: string;
+  category: string;
+  city: string;
+  state: string;
+}
 
 export default function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
   const { user, userData, loading, logout } = useAuth();
   const menuRef = useRef<HTMLDivElement>(null);
+  const searchDropdownRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
   // Debug logging
   useEffect(() => {
@@ -22,19 +38,68 @@ export default function Navbar() {
     });
   }, [user, userData, loading]);
 
+  // Debounced search effect
+  useEffect(() => {
+    if (searchQuery.trim().length < 2) {
+      setSearchResults([]);
+      setShowDropdown(false);
+      return;
+    }
+
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+
+    debounceRef.current = setTimeout(async () => {
+      setIsSearching(true);
+      try {
+        const response = await fetch(`/api/search/businesses?q=${encodeURIComponent(searchQuery.trim())}`);
+        const data = await response.json();
+        
+        if (response.ok && data.results) {
+          setSearchResults(data.results.slice(0, 5));
+          setShowDropdown(true);
+        }
+      } catch (error) {
+        console.error('Search error:', error);
+      } finally {
+        setIsSearching(false);
+      }
+    }, 300);
+
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+    };
+  }, [searchQuery]);
+
   // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setIsMenuOpen(false);
       }
+      if (searchDropdownRef.current && !searchDropdownRef.current.contains(event.target as Node)) {
+        setShowDropdown(false);
+      }
     };
 
-    if (isMenuOpen) {
+    if (isMenuOpen || showDropdown) {
       document.addEventListener('mousedown', handleClickOutside);
       return () => document.removeEventListener('mousedown', handleClickOutside);
     }
-  }, [isMenuOpen]);
+  }, [isMenuOpen, showDropdown]);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (searchQuery.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      setIsSearchOpen(false);
+      setSearchQuery("");
+    }
+  };
 
   return (
     <nav className="fixed top-5 left-5 right-5 bg-white/95 backdrop-blur-sm shadow-sm z-50 rounded">
@@ -162,14 +227,18 @@ export default function Navbar() {
 
         {/* Search Bar (Expandable) */}
         <div 
-          className={`overflow-hidden transition-all duration-300 ease-in-out ${
-            isSearchOpen ? 'max-h-24 opacity-100' : 'max-h-0 opacity-0'
+          className={`transition-all duration-300 ease-in-out ${
+            isSearchOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
           }`}
+          style={{ overflow: isSearchOpen ? 'visible' : 'hidden' }}
         >
-          <div className="pb-4 px-4">
-            <div className="relative w-full">
+          <form onSubmit={handleSearch} className="pb-4 px-4">
+            <div className="relative w-full" ref={searchDropdownRef}>
               <input 
-                type="text" 
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => searchQuery.trim().length >= 2 && searchResults.length > 0 && setShowDropdown(true)}
                 placeholder="Search businesses..." 
                 className="w-full px-4 py-3 pl-12 pr-12 text-gray-800 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300 transition-all"
                 autoFocus={isSearchOpen}
@@ -182,17 +251,68 @@ export default function Navbar() {
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
-              <button
-                onClick={() => setIsSearchOpen(false)}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-800 transition-colors"
-                aria-label="Close search"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              {isSearching ? (
+                <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-gray-500"></div>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsSearchOpen(false);
+                    setSearchQuery("");
+                    setShowDropdown(false);
+                  }}
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-800 transition-colors"
+                  aria-label="Close search"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
+              )}
+
+              {/* Dropdown Results */}
+              {showDropdown && searchResults.length > 0 && (
+                <div className="absolute z-50 w-full mt-2 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden">
+                  {searchResults.map((result) => (
+                    <button
+                      key={result.id}
+                      onClick={() => {
+                        router.push(`/business/${result.id}`);
+                        setShowDropdown(false);
+                        setSearchQuery("");
+                        setIsSearchOpen(false);
+                      }}
+                      className="w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="font-semibold text-gray-900 text-sm">{result.businessName}</p>
+                          <p className="text-xs text-gray-500">
+                            {result.category} • {result.city}, {result.state}
+                          </p>
+                        </div>
+                        <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </div>
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => {
+                      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+                      setShowDropdown(false);
+                      setIsSearchOpen(false);
+                    }}
+                    className="w-full px-4 py-2 text-xs text-center text-blue-600 hover:bg-blue-50 transition-colors font-medium"
+                  >
+                    View all results for &quot;{searchQuery}&quot;
+                  </button>
+                </div>
+              )}
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </nav>
