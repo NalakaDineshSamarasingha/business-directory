@@ -104,7 +104,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="min-h-screen pt-30 bg-gradient-to-br from-gray-50 via-white to-gray-50">
+    <section className="pt-30 bg-gradient-to-br from-gray-50 via-white to-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-4 lg:px-8 py-10">
         <div className="text-center space-y-6">
           {/* Heading */}
