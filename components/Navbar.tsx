@@ -121,6 +121,7 @@ export default function Navbar() {
             <Link href="/find-business" className="text-gray-800 hover:text-black transition-colors text-lg">
               Find a Business
             </Link>
+            
             <Link href="/business-register" className="text-gray-800 hover:text-black transition-colors text-lg">
               Have a Business
             </Link>
@@ -130,6 +131,11 @@ export default function Navbar() {
             <Link href="/contact" className="text-gray-800 hover:text-black transition-colors text-lg">
               Contact
             </Link>
+            {userData?.userType === 'business' && (
+              <Link href="/business-dashboard" className="text-gray-800 hover:text-black transition-colors text-lg">
+                Dashboard
+              </Link>
+            )}
           </div>
 
           {/* Search Icon & User Menu */}
