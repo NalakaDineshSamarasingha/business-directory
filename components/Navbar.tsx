@@ -98,7 +98,7 @@ export default function Navbar() {
     e.preventDefault();
     
     if (searchQuery.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      router.push(`/find-business?q=${encodeURIComponent(searchQuery.trim())}`);
       setIsSearchOpen(false);
       setSearchQuery("");
     }
@@ -328,7 +328,7 @@ export default function Navbar() {
                   ))}
                   <button
                     onClick={() => {
-                      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+                      router.push(`/find-business?q=${encodeURIComponent(searchQuery.trim())}`);
                       setShowDropdown(false);
                       setIsSearchOpen(false);
                     }}

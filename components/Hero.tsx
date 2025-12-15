@@ -196,7 +196,7 @@ export default function Hero() {
                     if (activeCategory) {
                       params.append('category', activeCategory);
                     }
-                    router.push(`/search?${params.toString()}`);
+                    router.push(`/find-business?${params.toString()}`);
                     setShowDropdown(false);
                   }}
                   className="w-full px-6 py-3 text-sm text-center text-blue-600 hover:bg-blue-50 transition-colors font-medium"
