@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { BusinessData, getBusinessDocument } from "@/services/firestore.service";
 import { showError } from "@/lib/utils/toast";
+import { trackBusinessView } from "@/lib/utils/analytics";
 
 // Import components
 import BusinessHero from "@/components/business-details/BusinessHero";
@@ -40,12 +41,28 @@ export default function BusinessDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState<string>("");
   const [activeTab, setActiveTab] = useState<'overview' | 'hours' | 'location' | 'service access'>('overview');
+  const hasTrackedView = useRef(false);
 
   useEffect(() => {
     if (businessId) {
       fetchBusinessData();
     }
   }, [businessId]);
+
+  // Separate effect for tracking view - only runs once per businessId
+  useEffect(() => {
+    if (businessId && business && !hasTrackedView.current) {
+      trackBusinessView(businessId);
+      hasTrackedView.current = true;
+    }
+    
+    // Reset tracking flag when businessId changes
+    return () => {
+      if (params.id !== businessId) {
+        hasTrackedView.current = false;
+      }
+    };
+  }, [businessId, business]);
 
   const fetchBusinessData = async () => {
     try {

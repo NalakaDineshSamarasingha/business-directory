@@ -6,9 +6,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useFavorites } from "@/contexts/FavoritesContext";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { trackBusinessSearch } from "@/lib/utils/analytics";
 
 interface SearchResult {
-  id: string;
+  uid: string;
   businessName: string;
   category: string;
   city: string;
@@ -295,9 +296,11 @@ export default function Navbar() {
                 <div className="absolute z-50 w-full mt-2 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden">
                   {searchResults.map((result) => (
                     <button
-                      key={result.id}
+                      key={result.uid}
                       onClick={() => {
-                        router.push(`/business/${result.id}`);
+                        // Track search click (anonymous)
+                        trackBusinessSearch(result.uid, searchQuery.trim());
+                        router.push(`/business/${result.uid}`);
                         setShowDropdown(false);
                         setSearchQuery("");
                         setIsSearchOpen(false);
