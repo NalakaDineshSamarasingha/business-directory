@@ -2,8 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { BusinessData } from "@/services/firestore.service";
 import { useFavorites } from "@/contexts/FavoritesContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { showError, showSuccess } from "@/lib/utils/toast";
 
 interface BusinessCardProps {
   business: BusinessData;
@@ -13,6 +16,8 @@ export default function BusinessCard({ business }: BusinessCardProps) {
   const defaultIcon = "https://via.placeholder.com/150?text=Business";
   const businessImage = business.businessIcon || defaultIcon;
   const { isFavorite, addFavorite, removeFavorite } = useFavorites();
+  const { user, userData } = useAuth();
+  const router = useRouter();
   const isInFavorites = isFavorite(business.uid || '');
 
   const handleFavoriteClick = (e: React.MouseEvent) => {
@@ -23,6 +28,50 @@ export default function BusinessCard({ business }: BusinessCardProps) {
       removeFavorite(business.uid || '');
     } else {
       addFavorite(business.uid || '');
+    }
+  };
+
+  const handleContactClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!user) {
+      showError("Please login to contact businesses");
+      router.push("/login");
+      return;
+    }
+
+    if (userData?.userType === "business") {
+      showError("Business accounts cannot message other businesses");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/chat/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: user.uid,
+          businessId: business.uid,
+          userName: (userData as any)?.firstName 
+            ? `${(userData as any).firstName} ${(userData as any).lastName}` 
+            : user.email?.split("@")[0],
+          businessName: business.businessName,
+          userAvatar: (userData as any)?.profilePic || null,
+          businessAvatar: business.businessIcon || null,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        router.push(`/messages/${data.chatId}`);
+      } else {
+        showError(data.error || "Failed to create chat");
+      }
+    } catch (error) {
+      console.error("Error creating chat:", error);
+      showError("Failed to start conversation");
     }
   };
 
@@ -102,7 +151,7 @@ export default function BusinessCard({ business }: BusinessCardProps) {
             </div>
           )}
           {business.category && (
-            <div className="absolute top-3 left-3 bg-[#151D26] text-white px-3 py-1 rounded-full text-xs font-semibold">
+            <div className="absolute bottom-3 left-3 bg-[#151D26] text-white px-3 py-1 rounded-full text-xs font-semibold">
               {business.category}
             </div>
           )}
@@ -141,8 +190,8 @@ export default function BusinessCard({ business }: BusinessCardProps) {
             </div>
           )}
 
-          {/* Open/Closed Status */}
-          <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-200">
+          {/* Actions */}
+          <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-200 gap-2">
             <div className="flex items-center">
               <div className={`w-2 h-2 rounded-full mr-2 ${isOpenNow() ? 'bg-green-500' : 'bg-red-500'}`}></div>
               <span className={`text-sm font-semibold ${isOpenNow() ? 'text-green-600' : 'text-red-600'}`}>
@@ -150,10 +199,16 @@ export default function BusinessCard({ business }: BusinessCardProps) {
               </span>
             </div>
 
-            {/* View Details Button */}
-            <span className="text-sm text-[#151D26] font-semibold hover:underline">
-              View Details →
-            </span>
+            {/* Contact Button */}
+            <button
+              onClick={handleContactClick}
+              className="text-xs bg-[#151D26] text-white px-3 py-1.5 rounded hover:bg-[#2B3D4F] transition-colors flex items-center gap-1"
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+              Contact
+            </button>
           </div>
         </div>
       </div>
