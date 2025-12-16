@@ -126,11 +126,14 @@ export default function ChatPage({ params }: { params: Promise<{ chatId: string 
       // Update chat metadata
       const otherUserId = chatData.participants.find((id) => id !== user.uid);
       const chatRef = doc(db, "chats", chatId);
+      
+      // Get current unread count for the other user
+      const currentUnread = chatData.unreadCount?.[otherUserId!] || 0;
+      
       await updateDoc(chatRef, {
         lastMessage: newMessage.trim(),
         lastMessageTimestamp: serverTimestamp(),
-        [`unreadCount.${otherUserId}`]:
-          ((chatData.unreadCount?.[otherUserId!] || 0) + 1),
+        [`unreadCount.${otherUserId}`]: currentUnread + 1,
       });
 
       setNewMessage("");
