@@ -60,6 +60,9 @@ export default function Hero() {
         if (response.ok && data.results) {
           setSearchResults(data.results.slice(0, 5)); // Show top 5 results
           setShowDropdown(true);
+        } else {
+          setSearchResults([]);
+          setShowDropdown(true); // Still show dropdown with "no results" message
         }
       } catch (error) {
         console.error('Search error:', error);
@@ -101,6 +104,10 @@ export default function Hero() {
       params.append('category', activeCategory);
     }
     
+    // Redirect to find-business with filters
+    router.push(`/find-business?${params.toString()}`);
+    setSearchQuery('');
+    setShowDropdown(false);
   };
 
   return (
@@ -159,50 +166,67 @@ export default function Hero() {
             </form>
 
             {/* Dropdown Results */}
-            {showDropdown && searchResults.length > 0 && (
+            {showDropdown && (
               <div className="absolute z-50 w-full mt-2 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden">
-                {searchResults.map((result) => (
-                  <button
-                    key={result.uid}
-                    onClick={() => {
-                      // Track search click (anonymous)
-                      trackBusinessSearch(result.uid, searchQuery.trim());
-                      router.push(`/business/${result.uid}`);
-                      setShowDropdown(false);
-                      setSearchQuery("");
-                    }}
-                    className="w-full px-6 py-4 text-left hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-semibold text-gray-900">{result.businessName}</p>
-                        <p className="text-sm text-gray-500">
-                          {result.category} • {result.city}, {result.state}
-                        </p>
-                      </div>
-                      <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
-                  </button>
-                ))}
-                <button
-                  onClick={() => {
-                    const params = new URLSearchParams();
-                    if (searchQuery.trim()) {
-                      params.append('q', searchQuery.trim());
-                    }
-                    const activeCategory = tabs.find(t => t.id === activeTab)?.category;
-                    if (activeCategory) {
-                      params.append('category', activeCategory);
-                    }
-                    router.push(`/find-business?${params.toString()}`);
-                    setShowDropdown(false);
-                  }}
-                  className="w-full px-6 py-3 text-sm text-center text-blue-600 hover:bg-blue-50 transition-colors font-medium"
-                >
-                  View all results for &quot;{searchQuery}&quot;
-                </button>
+                {searchResults.length > 0 ? (
+                  <>
+                    {searchResults.map((result) => (
+                      <button
+                        key={result.uid}
+                        onClick={() => {
+                          // Track search click (anonymous)
+                          trackBusinessSearch(result.uid, searchQuery.trim());
+                          router.push(`/business/${result.uid}`);
+                          setShowDropdown(false);
+                          setSearchQuery("");
+                        }}
+                        className="w-full px-6 py-4 text-left hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="font-semibold text-gray-900">{result.businessName}</p>
+                            <p className="text-sm text-gray-500">
+                              {result.category} • {result.city}, {result.state}
+                            </p>
+                          </div>
+                          <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </div>
+                      </button>
+                    ))}
+                    <button
+                      onClick={() => {
+                        const params = new URLSearchParams();
+                        if (searchQuery.trim()) {
+                          params.append('q', searchQuery.trim());
+                        }
+                        const activeCategory = tabs.find(t => t.id === activeTab)?.category;
+                        if (activeCategory) {
+                          params.append('category', activeCategory);
+                        }
+                        router.push(`/find-business?${params.toString()}`);
+                        setShowDropdown(false);
+                      }}
+                      className="w-full px-6 py-3 text-sm text-center text-blue-600 hover:bg-blue-50 transition-colors font-medium"
+                    >
+                      View all results for &quot;{searchQuery}&quot;
+                    </button>
+                  </>
+                ) : (
+                  <div className="px-6 py-8 text-center">
+                    <svg className="mx-auto h-12 w-12 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <p className="text-gray-600 font-medium mb-1">No results found</p>
+                    <p className="text-sm text-gray-500">
+                      Try searching with different keywords
+                      {tabs.find(t => t.id === activeTab)?.category && (
+                        <> or change category</>
+                      )}
+                    </p>
+                  </div>
+                )}
               </div>
             )}
           </div>

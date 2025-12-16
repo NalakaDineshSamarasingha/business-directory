@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
 import { db } from "@/lib/firebase/config";
 import { COLLECTIONS, BusinessData } from "@/services/firestore.service";
@@ -20,6 +21,7 @@ const CATEGORIES = [
 ];
 
 export default function FindBusinessPage() {
+  const searchParams = useSearchParams();
   const [businesses, setBusinesses] = useState<BusinessData[]>([]);
   const [filteredBusinesses, setFilteredBusinesses] = useState<BusinessData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -36,6 +38,19 @@ export default function FindBusinessPage() {
   const [states, setStates] = useState<string[]>([]);
   const [allServices, setAllServices] = useState<string[]>([]);
   const itemsPerPage = 12;
+
+  // Read URL parameters on mount
+  useEffect(() => {
+    const categoryParam = searchParams.get('category');
+    const queryParam = searchParams.get('q');
+    
+    if (categoryParam) {
+      setSelectedCategory(categoryParam);
+    }
+    if (queryParam) {
+      setSearchQuery(queryParam);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     fetchBusinesses();

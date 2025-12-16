@@ -65,9 +65,10 @@ export async function GET(request: NextRequest) {
       constraints.push(where('address.state', '==', state));
     }
 
-    // Add sorting
-    const sortField = sortBy === 'name' ? 'businessName' : 'createdAt';
-    constraints.push(orderBy(sortField, sortOrder));
+    // Only add sorting if no filters (to avoid composite index requirement)
+    // We'll sort on client-side after fetching
+    // const sortField = sortBy === 'name' ? 'businessName' : 'createdAt';
+    // constraints.push(orderBy(sortField, sortOrder));
 
     // Build the query
     const businessesRef = collection(db, COLLECTIONS.BUSINESSES);
@@ -103,6 +104,18 @@ export async function GET(request: NextRequest) {
         )
       );
     }
+
+    // Sort on client-side to avoid composite index requirement
+    allBusinesses.sort((a, b) => {
+      if (sortBy === 'name') {
+        const comparison = (a.businessName || '').localeCompare(b.businessName || '');
+        return sortOrder === 'asc' ? comparison : -comparison;
+      } else {
+        const aTime = a.createdAt?.seconds || 0;
+        const bTime = b.createdAt?.seconds || 0;
+        return sortOrder === 'asc' ? aTime - bTime : bTime - aTime;
+      }
+    });
 
     // Calculate pagination
     const total = allBusinesses.length;
