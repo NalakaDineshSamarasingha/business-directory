@@ -211,11 +211,9 @@ export default function BusinessRegisterPage() {
                     }
                   }}
                   className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-gray-900 ${
-                    errors.email
+                    errors.email || emailStatus.exists
                       ? "border-red-500 focus:ring-red-500"
-                      : emailStatus.exists 
-                      ? "border-red-500 focus:ring-red-500" 
-                      : emailStatus.message && !emailStatus.exists
+                      : formData.email && !emailStatus.checking && emailStatus.message && !emailStatus.exists
                       ? "border-green-500 focus:ring-green-500"
                       : "border-gray-300 focus:ring-[#151D26]"
                   }`}
@@ -233,7 +231,7 @@ export default function BusinessRegisterPage() {
                     </svg>
                   </div>
                 )}
-                {!emailStatus.checking && emailStatus.message && !emailStatus.exists && (
+                {!emailStatus.checking && !emailStatus.exists && emailStatus.message && (
                   <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                     <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
@@ -241,13 +239,13 @@ export default function BusinessRegisterPage() {
                   </div>
                 )}
               </div>
-              {emailStatus.message && (
-                <p className={`mt-1 text-sm ${emailStatus.exists ? "text-red-600" : "text-green-600"}`}>
-                  {emailStatus.message}
-                </p>
-              )}
               {errors.email && (
                 <p className="mt-1 text-sm text-red-500">{errors.email}</p>
+              )}
+              {emailStatus.message && (
+                <p className={`mt-1 text-sm ${emailStatus.exists ? "text-red-500" : "text-green-600"}`}>
+                  {emailStatus.message}
+                </p>
               )}
             </div>
 
@@ -396,7 +394,22 @@ export default function BusinessRegisterPage() {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-[#151D26] text-white py-3 rounded-lg hover:bg-[#2B3D4F] transition-colors font-medium text-lg"
+              disabled={
+                !formData.businessName.trim() ||
+                !formData.email.trim() ||
+                !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email) ||
+                emailStatus.exists ||
+                emailStatus.checking ||
+                !formData.password ||
+                formData.password.length < 8 ||
+                !/[A-Z]/.test(formData.password) ||
+                !/[a-z]/.test(formData.password) ||
+                !/[0-9]/.test(formData.password) ||
+                !/[!@#$%^&*(),.?":{}|<>]/.test(formData.password) ||
+                !formData.confirmPassword ||
+                formData.password !== formData.confirmPassword
+              }
+              className="w-full bg-[#151D26] text-white py-3 rounded-lg hover:bg-[#2B3D4F] transition-colors font-medium text-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#151D26]"
             >
               Create Business Account
             </button>

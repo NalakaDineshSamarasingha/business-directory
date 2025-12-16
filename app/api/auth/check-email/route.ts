@@ -1,44 +1,42 @@
 import { NextRequest, NextResponse } from "next/server";
-import { fetchSignInMethodsForEmail } from "firebase/auth";
-import { auth } from "@/lib/firebase/config";
+import { adminAuth } from "@/lib/firebase/admin";
 
 export async function POST(request: NextRequest) {
   try {
+    if (!adminAuth) {
+      return NextResponse.json(
+        { error: "Auth service not initialized" },
+        { status: 500 }
+      );
+    }
+
     const { email } = await request.json();
 
     if (!email) {
-      return NextResponse.json(
-        { error: "Email is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Email is required" }, { status: 400 });
     }
 
-    // Use Firebase Auth to check if email exists
-    // This method doesn't require Firestore permissions
-    const signInMethods = await fetchSignInMethodsForEmail(auth, email);
-
-    if (signInMethods.length > 0) {
-      return NextResponse.json(
-        { exists: true, message: "Email is already registered" },
-        { status: 200 }
-      );
+    // Check if email is already registered
+    try {
+      await adminAuth.getUserByEmail(email);
+      return NextResponse.json({
+        exists: true,
+        message: "Email is already registered",
+      });
+    } catch (error: unknown) {
+      // If error code is 'auth/user-not-found', it means email is not registered
+      const firebaseError = error as { code?: string };
+      if (firebaseError.code === "auth/user-not-found") {
+        return NextResponse.json({
+          exists: false,
+          message: "Email is available",
+        });
+      }
+      // Other errors
+      throw error;
     }
-
-    return NextResponse.json(
-      { exists: false, message: "Email is available" },
-      { status: 200 }
-    );
-  } catch (error: any) {
-    console.error("Email check error:", error);
-    
-    // If the error is about the method not being available, email doesn't exist
-    if (error.code === 'auth/invalid-email') {
-      return NextResponse.json(
-        { error: "Invalid email format" },
-        { status: 400 }
-      );
-    }
-
+  } catch (error) {
+    console.error("Error checking email availability:", error);
     return NextResponse.json(
       { error: "Failed to check email availability" },
       { status: 500 }
