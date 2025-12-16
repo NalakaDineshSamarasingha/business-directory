@@ -1,16 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { 
-  collection, 
-  addDoc, 
-  deleteDoc, 
-  getDocs, 
-  query, 
-  where,
-  doc,
-  setDoc,
-  serverTimestamp
-} from 'firebase/firestore';
-import { db } from '@/lib/firebase/config';
+import { adminDb } from '@/lib/firebase/admin';
 import { COLLECTIONS } from '@/services/firestore.service';
 
 const FAVORITES_COLLECTION = 'favorites';
@@ -28,9 +17,8 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const favoritesRef = collection(db, FAVORITES_COLLECTION);
-    const q = query(favoritesRef, where('userId', '==', userId));
-    const querySnapshot = await getDocs(q);
+    const favoritesRef = adminDb.collection(FAVORITES_COLLECTION);
+    const querySnapshot = await favoritesRef.where('userId', '==', userId).get();
 
     const favorites = querySnapshot.docs.map(doc => ({
       id: doc.id,
@@ -63,19 +51,17 @@ export async function POST(request: NextRequest) {
       
       for (const favBusinessId of favorites) {
         // Check if already exists
-        const favoritesRef = collection(db, FAVORITES_COLLECTION);
-        const q = query(
-          favoritesRef, 
-          where('userId', '==', userId),
-          where('businessId', '==', favBusinessId)
-        );
-        const existing = await getDocs(q);
+        const favoritesRef = adminDb.collection(FAVORITES_COLLECTION);
+        const existing = await favoritesRef
+          .where('userId', '==', userId)
+          .where('businessId', '==', favBusinessId)
+          .get();
 
         if (existing.empty) {
-          const docRef = await addDoc(collection(db, FAVORITES_COLLECTION), {
+          const docRef = await favoritesRef.add({
             userId,
             businessId: favBusinessId,
-            createdAt: serverTimestamp()
+            createdAt: new Date()
           });
           results.push({ businessId: favBusinessId, id: docRef.id });
         }
@@ -97,13 +83,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if already exists
-    const favoritesRef = collection(db, FAVORITES_COLLECTION);
-    const q = query(
-      favoritesRef, 
-      where('userId', '==', userId),
-      where('businessId', '==', businessId)
-    );
-    const querySnapshot = await getDocs(q);
+    const favoritesRef = adminDb.collection(FAVORITES_COLLECTION);
+    const querySnapshot = await favoritesRef
+      .where('userId', '==', userId)
+      .where('businessId', '==', businessId)
+      .get();
 
     if (!querySnapshot.empty) {
       return NextResponse.json(
@@ -113,10 +97,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Add new favorite
-    const docRef = await addDoc(collection(db, FAVORITES_COLLECTION), {
+    const docRef = await favoritesRef.add({
       userId,
       businessId,
-      createdAt: serverTimestamp()
+      createdAt: new Date()
     });
 
     return NextResponse.json({ 
@@ -149,13 +133,11 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Find and delete the favorite
-    const favoritesRef = collection(db, FAVORITES_COLLECTION);
-    const q = query(
-      favoritesRef, 
-      where('userId', '==', userId),
-      where('businessId', '==', businessId)
-    );
-    const querySnapshot = await getDocs(q);
+    const favoritesRef = adminDb.collection(FAVORITES_COLLECTION);
+    const querySnapshot = await favoritesRef
+      .where('userId', '==', userId)
+      .where('businessId', '==', businessId)
+      .get();
 
     if (querySnapshot.empty) {
       return NextResponse.json(
@@ -165,7 +147,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Delete the document
-    await deleteDoc(querySnapshot.docs[0].ref);
+    await querySnapshot.docs[0].ref.delete();
 
     return NextResponse.json({ 
       success: true,

@@ -46,7 +46,16 @@ export default function LoginPage() {
       
       // Fetch user data to determine redirect
       const response = await fetch(`/api/auth/user/${userCredential.user.uid}`);
+      
+      if (!response.ok) {
+        console.error('Failed to fetch user data');
+        router.push('/');
+        return;
+      }
+      
       const userData = await response.json();
+      
+      console.log('User data:', userData);
       
       // Redirect based on user type
       if (userData.userType === 'business') {

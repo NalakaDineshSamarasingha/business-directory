@@ -3,10 +3,10 @@ import { adminAuth, adminDb } from "@/lib/firebase/admin";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) {
   try {
-    const { userId } = params;
+    const { userId } = await params;
 
     if (!userId) {
       return NextResponse.json(
@@ -15,9 +15,6 @@ export async function GET(
       );
     }
 
-    // Get user from Firebase Auth
-    const userRecord = await adminAuth.getUserByEmail(userId);
-    
     // Get user data from Firestore
     const userDoc = await adminDb.collection("users").doc(userId).get();
     const businessDoc = await adminDb.collection("businesses").doc(userId).get();
@@ -25,18 +22,22 @@ export async function GET(
     let userData = null;
     let userType = "user";
 
-    if (userDoc.exists) {
-      userData = userDoc.data();
-      userType = "user";
-    } else if (businessDoc.exists) {
+    if (businessDoc.exists) {
       userData = businessDoc.data();
       userType = "business";
+    } else if (userDoc.exists) {
+      userData = userDoc.data();
+      userType = "user";
+    } else {
+      // If not in Firestore, get from Auth
+      const userRecord = await adminAuth.getUser(userId);
+      userType = "user"; // Default to user if no Firestore record
+      userData = { email: userRecord.email };
     }
 
     return NextResponse.json({
       success: true,
       userType,
-      email: userRecord.email,
       ...userData,
     });
   } catch (error: any) {

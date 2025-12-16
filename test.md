@@ -23,7 +23,7 @@ Test 02 - Login
             password:- test#123
         result - Invalid cred
         issue
-            Show 2 errors(need handle them)
+            Show 2 errors(need handle them) - fixed
     
     Login as user
         Data 
@@ -32,8 +32,8 @@ Test 02 - Login
         results - Login success but got error
             Error fetching favorites: [Error [FirebaseError]: Missing or insufficient permissions.]  
         issue
-            Firebase error in favourite collection
-            No redirecting
+            Firebase error in favourite collection - fixed
+            No redirecting - fixed
 
     Login as Business
         Data
@@ -41,5 +41,5 @@ Test 02 - Login
             password:-*******
         results - Login success and error got same time
         issue
-            issue with favourite collection
-            No redirecting to business dashboard
+            issue with favourite collection - fixed     
+            No redirecting to business dashboard - fixed
