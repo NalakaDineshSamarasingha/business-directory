@@ -13,6 +13,7 @@ export default function BusinessRegisterPage() {
     password: "",
     confirmPassword: "",
   });
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [emailStatus, setEmailStatus] = useState<{
     checking: boolean;
     exists: boolean;
@@ -59,6 +60,34 @@ export default function BusinessRegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Reset errors
+    setErrors({});
+    const newErrors: Record<string, string> = {};
+    
+    // Validate required fields
+    if (!formData.businessName.trim()) {
+      newErrors.businessName = "Business name is required";
+    }
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address";
+    }
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+    } else if (formData.password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters";
+    }
+    if (!formData.confirmPassword) {
+      newErrors.confirmPassword = "Please confirm your password";
+    }
+    
+    // Check if there are any errors
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
 
     if (emailStatus.exists) {
       toast.error("This email is already registered. Please use a different email.");
@@ -66,6 +95,7 @@ export default function BusinessRegisterPage() {
     }
 
     if (formData.password !== formData.confirmPassword) {
+      setErrors({ confirmPassword: "Passwords don't match" });
       toast.error("Passwords don't match!");
       return;
     }
@@ -141,33 +171,49 @@ export default function BusinessRegisterPage() {
             {/* Business Name */}
             <div>
               <label htmlFor="businessName" className="block text-sm font-medium text-gray-700 mb-2">
-                Business Name
+                Business Name <span className="text-red-500">*</span>
               </label>
               <input
                 id="businessName"
                 type="text"
-                required
                 value={formData.businessName}
-                onChange={(e) => setFormData({ ...formData, businessName: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] focus:border-transparent"
+                onChange={(e) => {
+                  setFormData({ ...formData, businessName: e.target.value });
+                  if (errors.businessName) setErrors({ ...errors, businessName: "" });
+                }}
+                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-gray-900 ${
+                  errors.businessName ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-[#151D26]"
+                }`}
                 placeholder="Your Business Name"
               />
+              {errors.businessName && (
+                <p className="mt-1 text-sm text-red-500">{errors.businessName}</p>
+              )}
             </div>
 
             {/* Email */}
             <div>
               <label htmlFor="businessEmail" className="block text-sm font-medium text-gray-700 mb-2">
-                Business Email
+                Business Email <span className="text-red-500">*</span>
               </label>
               <div className="relative">
                 <input
                   id="businessEmail"
                   type="email"
-                  required
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent ${
-                    emailStatus.exists 
+                  onChange={(e) => {
+                    setFormData({ ...formData, email: e.target.value });
+                    if (errors.email) setErrors({ ...errors, email: "" });
+                  }}
+                  onBlur={() => {
+                    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+                      setErrors({ ...errors, email: "Please enter a valid email address" });
+                    }
+                  }}
+                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-gray-900 ${
+                    errors.email
+                      ? "border-red-500 focus:ring-red-500"
+                      : emailStatus.exists 
                       ? "border-red-500 focus:ring-red-500" 
                       : emailStatus.message && !emailStatus.exists
                       ? "border-green-500 focus:ring-green-500"
@@ -200,38 +246,151 @@ export default function BusinessRegisterPage() {
                   {emailStatus.message}
                 </p>
               )}
+              {errors.email && (
+                <p className="mt-1 text-sm text-red-500">{errors.email}</p>
+              )}
             </div>
 
             {/* Password */}
             <div>
               <label htmlFor="businessPassword" className="block text-sm font-medium text-gray-700 mb-2">
-                Password
+                Password <span className="text-red-500">*</span>
               </label>
               <input
                 id="businessPassword"
                 type="password"
-                required
                 value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] focus:border-transparent"
+                onChange={(e) => {
+                  setFormData({ ...formData, password: e.target.value });
+                  if (errors.password) setErrors({ ...errors, password: "" });
+                }}
+                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-gray-900 ${
+                  errors.password ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-[#151D26]"
+                }`}
                 placeholder="••••••••"
               />
+              {formData.password && (
+                <div className="mt-2 space-y-1">
+                  <p className={`text-xs flex items-center ${
+                    formData.password.length >= 8 ? "text-green-600" : "text-gray-500"
+                  }`}>
+                    {formData.password.length >= 8 ? (
+                      <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                    ) : (
+                      <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                    At least 8 characters
+                  </p>
+                  <p className={`text-xs flex items-center ${
+                    /[A-Z]/.test(formData.password) ? "text-green-600" : "text-gray-500"
+                  }`}>
+                    {/[A-Z]/.test(formData.password) ? (
+                      <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                    ) : (
+                      <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                    One uppercase letter
+                  </p>
+                  <p className={`text-xs flex items-center ${
+                    /[a-z]/.test(formData.password) ? "text-green-600" : "text-gray-500"
+                  }`}>
+                    {/[a-z]/.test(formData.password) ? (
+                      <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                    ) : (
+                      <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                    One lowercase letter
+                  </p>
+                  <p className={`text-xs flex items-center ${
+                    /[0-9]/.test(formData.password) ? "text-green-600" : "text-gray-500"
+                  }`}>
+                    {/[0-9]/.test(formData.password) ? (
+                      <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                    ) : (
+                      <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                    One number
+                  </p>
+                  <p className={`text-xs flex items-center ${
+                    /[!@#$%^&*(),.?":{}|<>]/.test(formData.password) ? "text-green-600" : "text-gray-500"
+                  }`}>
+                    {/[!@#$%^&*(),.?":{}|<>]/.test(formData.password) ? (
+                      <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                    ) : (
+                      <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                    One special character (!@#$%^&*)
+                  </p>
+                </div>
+              )}
+              {errors.password && (
+                <p className="mt-1 text-sm text-red-500">{errors.password}</p>
+              )}
             </div>
 
             {/* Confirm Password */}
             <div>
               <label htmlFor="businessConfirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
-                Confirm Password
+                Confirm Password <span className="text-red-500">*</span>
               </label>
               <input
                 id="businessConfirmPassword"
                 type="password"
-                required
                 value={formData.confirmPassword}
-                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] focus:border-transparent"
+                onChange={(e) => {
+                  setFormData({ ...formData, confirmPassword: e.target.value });
+                  if (errors.confirmPassword) setErrors({ ...errors, confirmPassword: "" });
+                }}
+                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-gray-900 ${
+                  errors.confirmPassword
+                    ? "border-red-500 focus:ring-red-500"
+                    : formData.confirmPassword && formData.password && formData.confirmPassword === formData.password
+                    ? "border-green-500 focus:ring-green-500"
+                    : formData.confirmPassword && formData.password && formData.confirmPassword !== formData.password
+                    ? "border-red-500 focus:ring-red-500"
+                    : "border-gray-300 focus:ring-[#151D26]"
+                }`}
                 placeholder="••••••••"
               />
+              {formData.confirmPassword && formData.password && formData.confirmPassword === formData.password && (
+                <p className="mt-1 text-sm text-green-600 flex items-center">
+                  <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  Passwords match
+                </p>
+              )}
+              {formData.confirmPassword && formData.password && formData.confirmPassword !== formData.password && (
+                <p className="mt-1 text-sm text-red-500 flex items-center">
+                  <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  </svg>
+                  Passwords don't match
+                </p>
+              )}
+              {errors.confirmPassword && (
+                <p className="mt-1 text-sm text-red-500">{errors.confirmPassword}</p>
+              )}
             </div>
 
             {/* Submit Button */}
