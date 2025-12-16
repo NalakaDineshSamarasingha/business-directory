@@ -186,9 +186,9 @@ export default function ChatPage({ params }: { params: Promise<{ chatId: string 
   const otherParticipant = getOtherParticipant();
 
   return (
-    <div className="h-screen flex flex-col bg-gray-50">
+    <div className="h-screen  flex flex-col bg-gray-50">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-4 py-3 flex items-center gap-4">
+      <div className="bg-white border-b border-gray-200 px-4 py-3 pt-30 flex items-center gap-4">
         <Link
           href="/messages"
           className="text-gray-600 hover:text-gray-900"
