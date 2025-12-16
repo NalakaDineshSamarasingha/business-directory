@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
 import { db } from "@/lib/firebase/config";
@@ -20,7 +20,7 @@ const CATEGORIES = [
   "Other",
 ];
 
-export default function FindBusinessPage() {
+function FindBusinessContent() {
   const searchParams = useSearchParams();
   const [businesses, setBusinesses] = useState<BusinessData[]>([]);
   const [filteredBusinesses, setFilteredBusinesses] = useState<BusinessData[]>([]);
@@ -430,5 +430,17 @@ export default function FindBusinessPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function FindBusinessPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin h-12 w-12 border-4 border-gray-300 border-t-[#151D26] rounded-full"></div>
+      </div>
+    }>
+      <FindBusinessContent />
+    </Suspense>
   );
 }
