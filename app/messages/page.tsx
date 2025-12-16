@@ -92,15 +92,13 @@ export default function MessagesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-20 pb-12">
+    <div className="min-h-screen bg-gray-50 pt-30 pb-12">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-lg shadow-sm">
           {/* Header */}
           <div className="border-b border-gray-200 p-6">
             <h1 className="text-2xl font-bold text-gray-900">Messages</h1>
-            <p className="mt-1 text-sm text-gray-600">
-              Chat with businesses and customers
-            </p>
+          
           </div>
 
           {/* Chat List */}
