@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useFavorites } from "@/contexts/FavoritesContext";
+import { useChat } from "@/contexts/ChatContext";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { trackBusinessSearch } from "@/lib/utils/analytics";
@@ -25,21 +26,11 @@ export default function Navbar() {
   const [showDropdown, setShowDropdown] = useState(false);
   const { user, userData, loading, logout } = useAuth();
   const { favorites } = useFavorites();
+  const { unreadCount } = useChat();
   const menuRef = useRef<HTMLDivElement>(null);
   const searchDropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
-
-  // Debug logging
-  useEffect(() => {
-    console.log('Navbar - Auth state:', { 
-      hasUser: !!user, 
-      userEmail: user?.email,
-      hasUserData: !!userData, 
-      userType: userData?.userType,
-      loading 
-    });
-  }, [user, userData, loading]);
 
   // Debounced search effect
   useEffect(() => {
@@ -162,6 +153,22 @@ export default function Navbar() {
               {favorites.length > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
                   {favorites.length}
+                </span>
+              )}
+            </Link>
+
+            {/* Messages Icon */}
+            <Link 
+              href="/messages"
+              className="relative p-2 text-gray-800 hover:text-blue-600 transition-colors"
+              aria-label="Messages"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+              {unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                  {unreadCount > 9 ? "9+" : unreadCount}
                 </span>
               )}
             </Link>

@@ -4,6 +4,7 @@ import "./globals.css";
 import ToastProvider from "@/components/ToastProvider";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { FavoritesProvider } from "@/contexts/FavoritesContext";
+import { ChatProvider } from "@/contexts/ChatContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -34,10 +35,12 @@ export default function RootLayout({
       >
         <AuthProvider>
           <FavoritesProvider>
-            {children}
-            <Navbar />
-            <Footer />
-            <ToastProvider />
+            <ChatProvider>
+              {children}
+              <Navbar />
+              <Footer />
+              <ToastProvider />
+            </ChatProvider>
           </FavoritesProvider>
         </AuthProvider>
       </body>
