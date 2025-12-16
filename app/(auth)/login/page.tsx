@@ -94,7 +94,7 @@ export default function LoginPage() {
         <div className="text-center">
           <Link href="/" className="inline-block mb-6">
             <span className="text-4xl text-black tracking-tight" style={{ fontFamily: 'Lobster, cursive' }}>
-              BizRate
+              BizDiary
             </span>
           </Link>
           <h2 className="text-3xl font-bold text-gray-900">Welcome back</h2>

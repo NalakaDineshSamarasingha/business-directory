@@ -101,7 +101,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center">
-            <span className="text-2xl text-black tracking-tight" style={{ fontFamily: 'Lobster, cursive' }}>BizRate</span>
+            <span className="text-2xl text-black tracking-tight" style={{ fontFamily: 'Lobster, cursive' }}>BizDiary</span>
           </Link>
 
           {/* Navigation Links */}

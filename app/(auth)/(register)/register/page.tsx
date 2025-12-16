@@ -159,11 +159,11 @@ export default function UserRegisterPage() {
         <div className="text-center">
           <Link href="/" className="inline-block mb-6">
             <span className="text-4xl text-black tracking-tight" style={{ fontFamily: 'Lobster, cursive' }}>
-              BizRate
+              BizDiary
             </span>
           </Link>
           <h2 className="text-3xl font-bold text-gray-900">Create User Account</h2>
-          <p className="mt-2 text-gray-600">Join BizRate as a regular user</p>
+          <p className="mt-2 text-gray-600">Join BizDiary as a regular user</p>
         </div>
 
         {/* User Type Toggle */}

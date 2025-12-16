@@ -142,11 +142,11 @@ export default function BusinessRegisterPage() {
         <div className="text-center">
           <Link href="/" className="inline-block mb-6">
             <span className="text-4xl text-black tracking-tight" style={{ fontFamily: 'Lobster, cursive' }}>
-              BizRate
+              BizDiary
             </span>
           </Link>
           <h2 className="text-3xl font-bold text-gray-900">Create Business Account</h2>
-          <p className="mt-2 text-gray-600">Register your business on BizRate</p>
+          <p className="mt-2 text-gray-600">Register your business on BizDiary</p>
         </div>
 
         {/* User Type Toggle */}
