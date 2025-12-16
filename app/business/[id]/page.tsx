@@ -181,6 +181,7 @@ export default function BusinessDetailsPage() {
 
       {/* Business Header */}
       <BusinessHeader
+        businessId={businessId}
         businessIcon={business.businessIcon ?? undefined}
         businessName={business.businessName}
         verified={business.verified}
@@ -304,6 +305,7 @@ export default function BusinessDetailsPage() {
             {/* Right Column - Sidebar */}
             <div className="space-y-6">
               <BusinessSidebar
+                businessId={businessId}
                 isOpen={isOpenNow()}
                 closingTime={getClosingTime()}
                 businessHours={activeTab === 'overview' ? business.businessHours : undefined}

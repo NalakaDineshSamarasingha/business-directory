@@ -1,4 +1,7 @@
+import { useFavorites } from '@/contexts/FavoritesContext';
+
 interface BusinessSidebarProps {
+  businessId: string;
   isOpen: boolean;
   closingTime?: string;
   businessHours?: Record<string, { open?: string; close?: string; closed?: boolean }>;
@@ -15,6 +18,7 @@ interface BusinessSidebarProps {
 }
 
 export default function BusinessSidebar({
+  businessId,
   isOpen,
   closingTime,
   businessHours,
@@ -23,16 +27,34 @@ export default function BusinessSidebar({
   formatTime,
   getDayName
 }: BusinessSidebarProps) {
+  const { isFavorite, addFavorite, removeFavorite } = useFavorites();
+  const isSaved = isFavorite(businessId);
+
+  const handleSaveToggle = async () => {
+    if (isSaved) {
+      await removeFavorite(businessId);
+    } else {
+      await addFavorite(businessId);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Save Card */}
       <div className="bg-white border border-gray-200 rounded-lg p-6">
         <h3 className="text-lg font-bold text-gray-900 mb-4">Save this business</h3>
-        <button className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-black text-white rounded-full hover:bg-gray-800 transition-colors font-semibold">
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button 
+          onClick={handleSaveToggle}
+          className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-full transition-colors font-semibold ${
+            isSaved 
+              ? 'bg-red-600 text-white hover:bg-red-700' 
+              : 'bg-black text-white hover:bg-gray-800'
+          }`}
+        >
+          <svg className="w-5 h-5" fill={isSaved ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
           </svg>
-          Save
+          {isSaved ? 'Saved' : 'Save'}
         </button>
       </div>
 
