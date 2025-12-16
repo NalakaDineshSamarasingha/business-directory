@@ -188,7 +188,7 @@ function FindBusinessContent() {
                 placeholder="Search by business name, description, or location..."
                 value={searchQuery}
                 onChange={handleSearchChange}
-                className="w-full px-4 py-3 pl-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] focus:border-transparent"
+                className="w-full px-4 py-3 pl-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] focus:border-transparent text-gray-900"
               />
               <svg
                 className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
@@ -212,9 +212,9 @@ function FindBusinessContent() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
               </svg>
               Filters
-              {(selectedCity || selectedState) && (
+              {(selectedCity || selectedState || selectedService) && (
                 <span className="bg-[#151D26] text-white text-xs rounded-full px-2 py-0.5">
-                  {[selectedCity, selectedState].filter(Boolean).length}
+                  {[selectedCity, selectedState, selectedService].filter(Boolean).length}
                 </span>
               )}
             </button>
@@ -244,7 +244,7 @@ function FindBusinessContent() {
         {showFilters && (
           <div className="mb-8 bg-white rounded-lg border border-gray-300 p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Filters</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* City Filter */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -253,7 +253,7 @@ function FindBusinessContent() {
               <select
                 value={selectedCity}
                 onChange={(e) => setSelectedCity(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] focus:border-transparent text-gray-900"
               >
                 <option value="">All Cities</option>
                 {cities.map((city) => (
@@ -272,12 +272,31 @@ function FindBusinessContent() {
               <select
                 value={selectedState}
                 onChange={(e) => setSelectedState(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] focus:border-transparent text-gray-900"
               >
                 <option value="">All States</option>
                 {states.map((state) => (
                   <option key={state} value={state}>
                     {state}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Service Type Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Service Type
+              </label>
+              <select
+                value={selectedService}
+                onChange={(e) => setSelectedService(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] focus:border-transparent text-gray-900"
+              >
+                <option value="">All Services</option>
+                {allServices.map((service) => (
+                  <option key={service} value={service}>
+                    {service}
                   </option>
                 ))}
               </select>
@@ -292,7 +311,7 @@ function FindBusinessContent() {
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as 'name' | 'date')}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] focus:border-transparent"
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#151D26] focus:border-transparent text-gray-900"
                 >
                   <option value="date">Date</option>
                   <option value="name">Name</option>
