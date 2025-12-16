@@ -136,7 +136,7 @@ export default function BusinessRegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-white to-gray-50 pt-24 pb-12 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-white to-gray-50 pt-30 pb-12 px-4">
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <div className="text-center">
