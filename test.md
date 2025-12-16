@@ -14,7 +14,7 @@ Test 01 - Register/Signup
             password:- test@123
         result - Error
         issue
-            email availability check failed
+            email availability check failed - fixed 
 
 Test 02 - Login
     Login as user
