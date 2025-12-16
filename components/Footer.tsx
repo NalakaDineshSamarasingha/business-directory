@@ -8,9 +8,9 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* About Section */}
           <div>
-            <h3 className="text-white text-lg font-semibold mb-4">About ABC Company</h3>
+            <h3 className="text-white text-lg font-semibold mb-4">About BizDiary</h3>
             <p className="text-sm text-gray-400 mb-4">
-              Empowering businesses worldwide with scalable, reliable, and cost-effective solutions. From startups to enterprises.
+              Your trusted platform for discovering and connecting with local businesses. Find services, read reviews, and grow your network.
             </p>
             <div className="flex space-x-4">
               <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition">
@@ -114,7 +114,7 @@ export default function Footer() {
         <div className="mt-8 pt-8 border-t border-gray-800">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-sm text-gray-400">
-              © {new Date().getFullYear()} ABC Company. All rights reserved.
+              © {new Date().getFullYear()} BizDiary. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <a href="#" className="text-sm text-gray-400 hover:text-white transition">

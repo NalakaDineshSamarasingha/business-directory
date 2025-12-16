@@ -19,8 +19,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ABC Company - Empowering Global Businesses",
-  description: "From startups to multinational corporations, we deliver scalable, reliable, and cost-effective services to address your unique challenges.",
+  title: "BizDiary - Your Business Directory Platform",
+  description: "Discover and connect with local businesses. Find the best services, read reviews, and connect directly with businesses in your area.",
 };
 
 export default function RootLayout({
